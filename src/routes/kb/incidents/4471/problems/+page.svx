@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 · three problems, not one'
 owner: Kacper Jurak
-status: open
+status: closed
 reviewed: 2026-11-03
 signature: Kacper Jurak
 ---
@@ -19,14 +19,24 @@ signature: Kacper Jurak
   };
 </script>
 
-[#4471](/kb/incidents/4471) is marked known: one issue, one fix queued. Read report by report, it
-holds three problems. The queued parser fix closes only the first one. Each problem now has its
-own ticket.
+[#4471](/kb/incidents/4471) was marked known: one issue, one fix queued. Read report by report, it
+holds three problems. Each problem got its own ticket.
 
 <ProblemTable ticket={4471} {issues} />
 
+## Where each one stands
+
+Engineering closed #4471 on 5 October. The tickets are closed to match.
+
+| problem | outcome | ticket |
+|---|---|---|
+| `parser` | fixed: `fix(dates): parse dd/mm for eu locales` | closed, completed |
+| `hint` | won't fix: the booking-v3 form is retired | closed, not planned |
+| `move` | filed under `parser` by the desk, closed with it | closed, completed |
+
 <Callout kind="warn">
-Shipping the parser fix and closing #4471 would leave the other two problems with no ticket.
+The parser fix reads dates the tenant's way. It does not explain a date that moves by one day.
+If one-day moves keep coming, reopen the <code>move</code> ticket.
 </Callout>
 
 ## The three problems
