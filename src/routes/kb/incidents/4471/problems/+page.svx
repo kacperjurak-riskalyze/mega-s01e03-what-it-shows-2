@@ -1,0 +1,62 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: Kacper Jurak
+status: open
+reviewed: 2026-11-03
+signature: Kacper Jurak
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const issues = {
+    parser: 'https://github.com/kacperjurak-riskalyze/mega-s01e03-what-it-shows-2/issues/1',
+    hint: 'https://github.com/kacperjurak-riskalyze/mega-s01e03-what-it-shows-2/issues/2',
+    move: 'https://github.com/kacperjurak-riskalyze/mega-s01e03-what-it-shows-2/issues/3',
+  };
+</script>
+
+[#4471](/kb/incidents/4471) is marked known: one issue, one fix queued. Read report by report, it
+holds three problems. The queued parser fix closes only the first one. Each problem now has its
+own ticket.
+
+<ProblemTable ticket={4471} {issues} />
+
+<Callout kind="warn">
+Shipping the parser fix and closing #4471 would leave the other two problems with no ticket.
+</Callout>
+
+## The three problems
+
+**`parser`: the shared parser reads day-first dates month first.** A day-first tenant books
+7 April and the invite says 4 July. Most of #4471 is this.
+
+**`hint`: booking-v3 prints an `MM/DD/YYYY` hint to day-first tenants.** Their people type month
+first, as the hint says, and the form reads the date day first. The dates come out swapped, so it
+looks like `parser`, but the parser fix does not touch it. It shows only through the form channel
+at tenants that run booking-v3.
+
+**`move`: the invite moves by one day.** No month is flipped: the 12 May invite shows 11 May, a
+client in Lisbon gets Tuesday while one in Toronto gets Monday. That points at time zones, not at
+date order. The desk already read these as a one-day move (`desk-notes.json`), but the cause
+table on #4471 counts them under `parser`.
+
+## How the reports were placed
+
+- One id is one report. The export comes in overlapping pages, so some rows appear twice; the
+  counts drop the repeats.
+- The cause comes from the tenant's locale and booking form (`#lib/kb/causes`), not from the
+  intake tag. The tag is a guess from the reporter's browser.
+- Counts are the desk's own, on the export as it is. The one-day moves stay counted under the
+  cause they are filed under, and also get the `move` row and ticket (`#lib/kb/problems`).
+
+## Why they were merged
+
+All three came in under the same subject lines, and [decision 0001](/kb/decisions/0001-dedupe-by-subject)
+merges on subject alone. Here that hid two problems inside a ticket marked known. A new decision
+record could add a check on the cause; this page does not change 0001.
+
+<RenderStamp {signature} />
